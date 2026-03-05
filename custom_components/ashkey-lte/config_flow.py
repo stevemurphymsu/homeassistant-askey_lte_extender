@@ -57,8 +57,8 @@ class AskeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input["password"]
             )
             if valid:
-                return self.async_create_entry(
-                    title="ASKEY LTE",
+                return self.async_update_reload_and_abort(
+                    self._get_reconfigure_entry(),
                     data={
                         "ip_address": user_input["ip_address"],
                         "password": user_input["password"]
@@ -67,7 +67,7 @@ class AskeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "auth_failed"
 
         # Get current config entry
-        current_entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
+        current_entry = self._get_reconfigure_entry()
 
         return self.async_show_form(
             step_id="reconfigure",

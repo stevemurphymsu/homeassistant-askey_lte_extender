@@ -12,7 +12,7 @@ async def system_health_info(hass: HomeAssistant) -> dict[str, any]:
     """Get system health info."""
     client = None
     for entry_id, data in hass.data[DOMAIN].items():
-        client = data
+        client = data["api"]
         break
 
     data = {

@@ -16,7 +16,7 @@ from homeassistant.helpers.update_coordinator import (
     UpdateFailed,
 )
 
-from .const import DOMAIN
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
 from .api import AskeyLTEApi
 
 _LOGGER = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class AskeyDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER,
             name="ASKEY LTE Data Coordinator",
             config_entry=config_entry,
-            update_interval=timedelta(seconds=30)
+            update_interval=timedelta(seconds=DEFAULT_SCAN_INTERVAL)
         )
         self.api = api
 
@@ -59,11 +59,17 @@ class AskeyDataUpdateCoordinator(DataUpdateCoordinator):
             alarm_log = await self.api.get_alarm_log()
             reboot_log = await self.api.get_reboot_log()
             about_status = await self.api.get_about_status()
+            advanced_status = await self.api.get_advanced_status()
+            devices_status = await self.api.get_devices_status()
+            gps_status = await self.api.get_gps_status()
             
             return {
                 "alarm_log": alarm_log,
                 "reboot_log": reboot_log,
                 "about_status": about_status,
+                "advanced_status": advanced_status,
+                "devices_status": devices_status,
+                "gps_status": gps_status,
                 "auth_token": self.api.token,
                 "xsrf_token": self.api.xsrf,
                 "alarm_defs": self.api.alarm_defs,
@@ -87,6 +93,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "api": api,
         "coordinator": coordinator
     }
+
+    await hass.config_entries.async_forward_entry_setups(entry, ["sensor"])
 
     #async_add_entities(
     #    AskeyLTEApi(coordinator) for idx, ent in enumerate(coordinator.data)

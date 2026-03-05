@@ -45,6 +45,7 @@ class AskeyLTEApi:
                 self.token = data.get("Authtoken")
                 self.token_expiry = data.get("expires")
                 self.xsrf = response.cookies.get("X-XSRF-TOKEN")
+                await self.cache_metadata()
                 self.alarm_log = await self.get_alarm_log()
                 self.reboot_log = await self.get_reboot_log()
         except Exception as e:
@@ -72,6 +73,15 @@ class AskeyLTEApi:
 
     async def get_about_status(self) -> dict:
         return await self.fetch_data("aboutStatus")
+
+    async def get_advanced_status(self) -> dict:
+        return await self.fetch_data("advanced")
+
+    async def get_devices_status(self) -> dict:
+        return await self.fetch_data("devices")
+
+    async def get_gps_status(self) -> dict:
+        return await self.fetch_data("gps")
 
 async def test_api():
     async with ClientSession() as session:
