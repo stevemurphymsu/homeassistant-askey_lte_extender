@@ -42,13 +42,13 @@ async def async_setup_entry(
             }
 
         except Exception as err:
-            _LOGGER.exception("Unexpected error fetching ashkey-lte data")
-            raise UpdateFailed(f"Error communicating with ASHKEY API: {err}") from err
+            _LOGGER.exception("Unexpected error fetching askey-lte data")
+            raise UpdateFailed(f"Error communicating with ASKEY API: {err}") from err
 
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="ashkey-lte sensor",
+        name="askey-lte sensor",
         update_method=async_update_data,
         update_interval = timedelta(seconds=DEFAULT_SCAN_INTERVAL),
     )
@@ -56,19 +56,19 @@ async def async_setup_entry(
     await coordinator.async_config_entry_first_refresh()
 
     entities = [
-        AshkeySensor(coordinator, "Last Alarm", "alarmName", "alarm"),
-        AshkeySensor(coordinator, "Last Reboot", "rebootReason", "reboot"),
-        AshkeySensor(coordinator, "Uptime", "uptime", "about"),
-        AshkeySensor(coordinator, "GPS Status", "gpsStatus", "about")
+        AskeySensor(coordinator, "Last Alarm", "alarmName", "alarm"),
+        AskeySensor(coordinator, "Last Reboot", "rebootReason", "reboot"),
+        AskeySensor(coordinator, "Uptime", "uptime", "about"),
+        AskeySensor(coordinator, "GPS Status", "gpsStatus", "about")
     ]
 
     async_add_entities(entities)
 
-class AshkeySensor(SensorEntity):
+class AskeySensor(SensorEntity):
     def __init__(self, coordinator, name, key, section):
         self.coordinator = coordinator
-        self._attr_name = f"ASHKEY LTE {name}"
-        self._attr_unique_id = f"ashkey_{section}_{key}"
+        self._attr_name = f"ASKEY LTE {name}"
+        self._attr_unique_id = f"askey_{section}_{key}"
         self.key = key
         self.section = section
         self._attr_entity_category = EntityCategory.DIAGNOSTIC

@@ -5,7 +5,7 @@ header:
   show: true
   title: Hourly Capacity Used
 series:
-  - entity: sensor.ashkey_hourly_capacity
+  - entity: sensor.askey_hourly_capacity
     type: column
     color_thresholds:
       - value: 20

@@ -1,14 +1,14 @@
 input_number:
-  ashkey_hour_00:
+  askey_hour_00:
     name: Hour 00 Capacity
     min: 0
     max: 100
     step: 1
-  ashkey_hour_01:
+  askey_hour_01:
     name: Hour 01 Capacity
     min: 0
     max: 100
     step: 1
-  ashkey_hour_02:
+  askey_hour_02:
     ...
   # Repeat through hour_23

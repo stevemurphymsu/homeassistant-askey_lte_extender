@@ -3,12 +3,12 @@ type: vertical-stack
 cards:
   - type: entities
     entities:
-      - sensor.ashkey_lte_gps_status
-      - sensor.ashkey_lte_gps_satellite_count
-      - sensor.ashkey_lte_gps_satellite_avg_quality
-      - sensor.ashkey_lte_gps_satellite_max_quality
-      - sensor.ashkey_lte_gps_satellite_min_quality
+      - sensor.askey_lte_gps_status
+      - sensor.askey_lte_gps_satellite_count
+      - sensor.askey_lte_gps_satellite_avg_quality
+      - sensor.askey_lte_gps_satellite_max_quality
+      - sensor.askey_lte_gps_satellite_min_quality
   - type: map
     entities:
-      - entity: sensor.ashkey_lte_lati
-      - entity: sensor.ashkey_lte_longi
+      - entity: sensor.askey_lte_lati
+      - entity: sensor.askey_lte_longi

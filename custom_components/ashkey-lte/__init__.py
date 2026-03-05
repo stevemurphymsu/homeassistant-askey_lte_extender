@@ -17,18 +17,18 @@ from homeassistant.helpers.update_coordinator import (
 )
 
 from .const import DOMAIN
-from .api import AshkeyLTEApi
+from .api import AskeyLTEApi
 
 _LOGGER = logging.getLogger(__name__)
 
-class AshkeyDataUpdateCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching data from the ASHKEY LTE device."""
-    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, api: AshkeyLTEApi) -> None:
+class AskeyDataUpdateCoordinator(DataUpdateCoordinator):
+    """Class to manage fetching data from the ASKEY LTE device."""
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, api: AskeyLTEApi) -> None:
         """Initialize."""
         super().__init__(
             hass,
             _LOGGER,
-            name="ASHKEY LTE Data Coordinator",
+            name="ASKEY LTE Data Coordinator",
             config_entry=config_entry,
             update_interval=timedelta(seconds=30)
         )
@@ -73,13 +73,13 @@ class AshkeyDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed(f"Error communicating with API: {err}")
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up ASHKEY LTE from a config entry."""
+    """Set up ASKEY LTE from a config entry."""
     ip = entry.data.get("ip_address")
     password = entry.data.get("password")
     
     session = async_get_clientsession(hass)
-    api = AshkeyLTEApi(ip, password, session)
-    coordinator = AshkeyDataUpdateCoordinator(hass, entry, api)
+    api = AskeyLTEApi(ip, password, session)
+    coordinator = AskeyDataUpdateCoordinator(hass, entry, api)
 
     await coordinator.async_config_entry_first_refresh()
     
@@ -89,7 +89,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     }
 
     #async_add_entities(
-    #    AshkeyLTEApi(coordinator) for idx, ent in enumerate(coordinator.data)
+    #    AskeyLTEApi(coordinator) for idx, ent in enumerate(coordinator.data)
     #)
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

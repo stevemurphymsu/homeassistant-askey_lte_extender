@@ -1,13 +1,13 @@
 automation:
-  - alias: Update ASHKEY Hourly Capacity
+  - alias: Update ASKEY Hourly Capacity
     trigger:
       - platform: time_pattern
         minutes: "0"
     variables:
       hour: "{{ now().strftime('%H') }}"
       attr_name: "{{ hour ~ ':00' }}"
-      capacity: "{{ state_attr('sensor.ashkey_hourly_capacity', attr_name) | float }}"
-      target_input: "input_number.ashkey_hour_{{ hour }}"
+      capacity: "{{ state_attr('sensor.askey_hourly_capacity', attr_name) | float }}"
+      target_input: "input_number.askey_hour_{{ hour }}"
     action:
       - service: input_number.set_value
         target:

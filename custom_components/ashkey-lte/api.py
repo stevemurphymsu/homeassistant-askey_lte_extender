@@ -6,7 +6,7 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
-class AshkeyLTEApi:
+class AskeyLTEApi:
     def __init__(self, ip, password, session: ClientSession):
         self.ip = ip
         self.password = password
@@ -48,7 +48,7 @@ class AshkeyLTEApi:
                 self.alarm_log = await self.get_alarm_log()
                 self.reboot_log = await self.get_reboot_log()
         except Exception as e:
-            _LOGGER.error("ASHKEY: Exception during authentication %s", e)
+            _LOGGER.error("ASKEY: Exception during authentication %s", e)
         return {}
         
     async def fetch_data(self, endpoint):
@@ -57,7 +57,7 @@ class AshkeyLTEApi:
                 text = await response.text()
                 return json.loads(text) if response.status == 200 else {}
         except Exception as e:
-            _LOGGER.error("ASHKEY: Exception while fetching %s: %s", endpoint, e)
+            _LOGGER.error("ASKEY: Exception while fetching %s: %s", endpoint, e)
             return {}
 
     async def cache_metadata(self):
@@ -77,7 +77,7 @@ async def test_api():
     async with ClientSession() as session:
         ip=""
         password=""
-        api = AshkeyLTEApi(ip, password, session)
+        api = AskeyLTEApi(ip, password, session)
         await api.authenticate()
         print(f"Alarm Codes: {api.alarm_defs}\n")
         print(f"Reboot Codes: {api.reboot_defs}\n")

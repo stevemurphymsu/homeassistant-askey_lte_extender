@@ -2,17 +2,17 @@ type: vertical-stack
 title: LTE Performance
 cards:
   - type: gauge
-    entity: sensor.ashkey_lte_current_uplink
+    entity: sensor.askey_lte_current_uplink
     name: Uplink Mbps
     min: 0
     max: 10
   - type: gauge
-    entity: sensor.ashkey_lte_current_downlink
+    entity: sensor.askey_lte_current_downlink
     name: Downlink Mbps
     min: 0
     max: 10
   - type: entities
     title: Hourly Bandwidth
     entities:
-      - sensor.ashkey_lte_hourly_uplink
-      - sensor.ashkey_lte_hourly_downlink
+      - sensor.askey_lte_hourly_uplink
+      - sensor.askey_lte_hourly_downlink

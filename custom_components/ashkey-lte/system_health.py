@@ -1,4 +1,4 @@
-"""System health for ASHKEY LTE."""
+"""System health for ASKEY LTE."""
 from homeassistant.components import system_health
 from homeassistant.core import HomeAssistant, callback
 from .const import DOMAIN

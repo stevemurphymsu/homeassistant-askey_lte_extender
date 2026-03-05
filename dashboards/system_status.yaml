@@ -1,7 +1,7 @@
 title: System Status
 type: entities
 entities:
-  - sensor.ashkey_lte_lcd_page_event
-  - sensor.ashkey_lte_lcd_datetime
-  - sensor.ashkey_lte_activeuecount
-  - sensor.ashkey_lte_activeuecounttot
+  - sensor.askey_lte_lcd_page_event
+  - sensor.askey_lte_lcd_datetime
+  - sensor.askey_lte_activeuecount
+  - sensor.askey_lte_activeuecounttot

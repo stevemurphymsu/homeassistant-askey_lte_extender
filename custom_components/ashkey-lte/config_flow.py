@@ -1,20 +1,20 @@
 from homeassistant import config_entries
 import voluptuous as vol
 from .const import DOMAIN
-from .api import AshkeyLTEApi
+from .api import AskeyLTEApi
 import aiohttp
 import logging
 
 _LOGGER = logging.getLogger(__name__)
 
-class AshkeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class AskeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     async def _test_credentials(self, ip_address, password):
         """Test if we can authenticate with the host."""
         try:
             session = aiohttp.ClientSession()
-            api = AshkeyLTEApi(ip_address, password, session)
+            api = AskeyLTEApi(ip_address, password, session)
             await api.authenticate()
             await session.close()
             return True
@@ -31,7 +31,7 @@ class AshkeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             if valid:
                 return self.async_create_entry(
-                    title="ASHKEY LTE",
+                    title="ASKEY LTE",
                     data={
                         "ip_address": user_input["ip_address"],
                         "password": user_input["password"]
@@ -58,7 +58,7 @@ class AshkeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             if valid:
                 return self.async_create_entry(
-                    title="ASHKEY LTE",
+                    title="ASKEY LTE",
                     data={
                         "ip_address": user_input["ip_address"],
                         "password": user_input["password"]

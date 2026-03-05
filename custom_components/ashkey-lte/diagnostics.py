@@ -1,4 +1,4 @@
-"""Diagnostics support for ASHKEY LTE."""
+"""Diagnostics support for ASKEY LTE."""
 from __future__ import annotations
 
 from homeassistant.components.diagnostics import async_redact_data

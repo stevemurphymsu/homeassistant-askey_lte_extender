@@ -1,6 +1,6 @@
-# 📡 ASHKEY LTE Integration – Complete API Reference
+# 📡 ASKEY LTE Integration – Complete API Reference
 
-Custom Home Assistant integration for ASHKEY LTE femtocells. This guide documents reverse-engineered API calls, authentication headers, payloads, and full JSON responses.
+Custom Home Assistant integration for ASKEY LTE femtocells. This guide documents reverse-engineered API calls, authentication headers, payloads, and full JSON responses.
 
 ---
 

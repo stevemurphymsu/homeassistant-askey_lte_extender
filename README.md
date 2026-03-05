@@ -1,6 +1,6 @@
-# ASHKEY LTE Network Extender – Home Assistant Integration
+# ASKEY LTE Network Extender – Home Assistant Integration
 
-Track and visualize LTE diagnostics, alarms, GPS data, bandwidth trends, and system health from your ASHKEY femtocell—all inside Home Assistant.
+Track and visualize LTE diagnostics, alarms, GPS data, bandwidth trends, and system health from your ASKEY femtocell—all inside Home Assistant.
 
 ---
 
@@ -23,10 +23,10 @@ Track and visualize LTE diagnostics, alarms, GPS data, bandwidth trends, and sys
 ## ⚙️ Installation
 
 ### Option 1: Manual
-1. Copy `custom_components/ashkey_lte` into `config/custom_components/`
+1. Copy `custom_components/askey_lte` into `config/custom_components/`
 2. Restart Home Assistant
 3. Go to **Settings > Devices & Services > Add Integration**
-4. Search for `ASHKEY LTE`
+4. Search for `ASKEY LTE`
 
 ### Option 2: HACS
 1. Open HACS > Integrations > Custom Repositories
@@ -39,7 +39,7 @@ Track and visualize LTE diagnostics, alarms, GPS data, bandwidth trends, and sys
 ## 🧩 Configuration
 
 Enter:
-- IP address of your ASHKEY extender
+- IP address of your ASKEY extender
 - Admin password
 
 All tokens are cached securely and refreshed automatically.
@@ -49,7 +49,7 @@ All tokens are cached securely and refreshed automatically.
 ## 📊 Dashboards
 
 Prebuilt panels available in `/dashboards/`:
-- `ashkey_overview.yaml`
+- `askey_overview.yaml`
 - `lte_performance.yaml`
 - `gps_diagnostics.yaml`
 - `alarms_and_reboots.yaml`
@@ -72,8 +72,8 @@ This tracks hourly usage and feeds long-term statistics.
 
 ## 🔔 Events Fired
 
-- `ashkey_alarm_event`
-- `ashkey_reboot_event`
+- `askey_alarm_event`
+- `askey_reboot_event`
 
 Use these in automations, logbook, or persistent notifications.
 

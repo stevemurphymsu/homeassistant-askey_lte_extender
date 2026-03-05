@@ -1,14 +1,14 @@
 {
-  "domain": "ashkey-lte",
-  "name": "ASHKEY LTE Network Extender",
-  "documentation": "https://github.com/stevemurphymsu/ashkey_lte_extender",
+  "domain": "askey-lte",
+  "name": "ASKEY LTE Network Extender",
+  "documentation": "https://github.com/stevemurphymsu/askey_lte_extender",
   "version": "0.1",
   "requirements": [],
   "codeowners": ["@stevemurphymsu"],
   "platforms": ["sensor"],
   "iot_class": "local_polling",
   "config_flow": true,
-  "loggers": ["ashkey_lte"],
+  "loggers": ["askey_lte"],
   "diagnostics": true,
   "system_health": true
 }

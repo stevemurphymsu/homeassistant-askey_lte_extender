@@ -4,11 +4,11 @@ cards:
   - type: entities
     title: Last Alarm
     entities:
-      - sensor.ashkey_lte_last_alarm_name
-      - sensor.ashkey_lte_last_alarm_time
-      - sensor.ashkey_lte_last_alarm_severity
+      - sensor.askey_lte_last_alarm_name
+      - sensor.askey_lte_last_alarm_time
+      - sensor.askey_lte_last_alarm_severity
   - type: entities
     title: Last Reboot
     entities:
-      - sensor.ashkey_lte_last_reboot_reason
-      - sensor.ashkey_lte_last_reboot_time
+      - sensor.askey_lte_last_reboot_reason
+      - sensor.askey_lte_last_reboot_time
