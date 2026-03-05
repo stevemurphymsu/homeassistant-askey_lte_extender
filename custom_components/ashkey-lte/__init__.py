@@ -96,6 +96,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, ["sensor"])
 
+    return True
+
     #async_add_entities(
     #    AskeyLTEApi(coordinator) for idx, ent in enumerate(coordinator.data)
     #)
