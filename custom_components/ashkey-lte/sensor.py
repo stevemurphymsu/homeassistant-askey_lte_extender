@@ -81,6 +81,7 @@ async def async_setup_entry(
         entities.append(AskeySensor(coordinator, f"Alarm {alarm_info['alarmName']}", "alarmState", "alarm_log", "alarmHistoryList", alarm_id=alarm_id))
 
     async_add_entities(entities)
+    return True
 
 class AskeySensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, name, key, section, list_key=None, alarm_id=None):
