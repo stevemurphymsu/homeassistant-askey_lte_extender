@@ -75,12 +75,17 @@ async def async_setup_entry(
         AskeySensor(coordinator, "Longitude", "longi", "gps_status"),
         AskeySensor(coordinator, "Latitude", "lati", "gps_status")
     ]
+    
+    logging.getLogger(__name__).debug("Creating alarm entities")
 
     alarm_defs = coordinator.data.get("alarm_defs", {})
     for alarm_id, alarm_info in alarm_defs.items():
         entities.append(AskeySensor(coordinator, f"Alarm {alarm_info['alarmName']}", "alarmState", "alarm_log", "alarmHistoryList", alarm_id=alarm_id))
 
-    async_add_entities(entities)
+    logging.getLogger(__name__).debug(f"Entities to add: {[entity._attr_name for entity in entities]}")
+
+    hass.async_add_entities(entities,True)
+    logging.getLogger(__name__).debug("async_add_entities complete")
     return True
 
 class AskeySensor(CoordinatorEntity, SensorEntity):
@@ -92,7 +97,7 @@ class AskeySensor(CoordinatorEntity, SensorEntity):
         self.section = section
         self.list_key = list_key
         self.alarm_id = alarm_id
-        self._attr_entity_category = EntityCategory.DIAGNOSTIC
+        logging.getLogger(__name__).debug(f"Created sensor {self._attr_name} with unique_id {self._attr_unique_id}")
 
     @property
     def extra_state_attributes(self):
