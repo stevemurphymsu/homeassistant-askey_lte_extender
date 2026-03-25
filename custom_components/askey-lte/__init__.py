@@ -83,10 +83,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     ip = entry.data.get("ip_address")
     password = entry.data.get("password")
     
+    logging.getLogger(__name__).debug(f"Creating session for API with IP: {ip}")
     session = async_get_clientsession(hass)
+
+    logging.getLogger(__name__).debug("Loading API")
     api = AskeyLTEApi(ip, password, session)
+    logging.getLogger(__name__).debug("Loading AskeyDataUpdateCoordinator")
     coordinator = AskeyDataUpdateCoordinator(hass, entry, api)
 
+    logging.getLogger(__name__).debug("Performing initial data refresh")
     await coordinator.async_config_entry_first_refresh()
     
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {
@@ -94,8 +99,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "coordinator": coordinator
     }
 
+    logging.getLogger(__name__).debug("Configuring sensors asynchronously")
     await hass.config_entries.async_forward_entry_setups(entry, ["sensor"])
 
+    logging.getLogger(__name__).debug("async_setup_entry done")
     return True
 
     #async_add_entities(
