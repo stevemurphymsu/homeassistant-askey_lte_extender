@@ -1,11 +1,13 @@
 from homeassistant import config_entries
 import voluptuous as vol
-from .const import DOMAIN
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL
 from .api import AskeyLTEApi
 import aiohttp
 import logging
 
 _LOGGER = logging.getLogger(__name__)
+
+MIN_SCAN_INTERVAL = 30
 
 class AskeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
@@ -43,7 +45,10 @@ class AskeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=vol.Schema({
                 vol.Required("ip_address"): str,
-                vol.Required("password"): str
+                vol.Required("password"): str,
+                vol.Required("scan_interval", default=DEFAULT_SCAN_INTERVAL): vol.All(
+                    vol.Coerce(int), vol.Range(min=MIN_SCAN_INTERVAL)
+                ),
             }),
             errors=errors
         )
@@ -61,7 +66,8 @@ class AskeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     self._get_reconfigure_entry(),
                     data={
                         "ip_address": user_input["ip_address"],
-                        "password": user_input["password"]
+                        "password": user_input["password"],
+                        "scan_interval": user_input.get("scan_interval", DEFAULT_SCAN_INTERVAL),
                     }
                 )
             errors["base"] = "auth_failed"
@@ -80,6 +86,10 @@ class AskeyConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     "password",
                     default=current_entry.data.get("password", "")
                 ): str,
+                vol.Required(
+                    "scan_interval",
+                    default=current_entry.data.get("scan_interval", DEFAULT_SCAN_INTERVAL),
+                ): vol.All(vol.Coerce(int), vol.Range(min=MIN_SCAN_INTERVAL)),
             }),
             errors=errors
         )

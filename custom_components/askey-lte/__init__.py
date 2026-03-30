@@ -25,12 +25,13 @@ class AskeyDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the ASKEY LTE device."""
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, api: AskeyLTEApi) -> None:
         """Initialize."""
+        scan_interval = config_entry.data.get("scan_interval", DEFAULT_SCAN_INTERVAL)
         super().__init__(
             hass,
             _LOGGER,
             name="ASKEY LTE Data Coordinator",
             config_entry=config_entry,
-            update_interval=timedelta(seconds=DEFAULT_SCAN_INTERVAL)
+            update_interval=timedelta(seconds=scan_interval)
         )
         self.api = api
 
