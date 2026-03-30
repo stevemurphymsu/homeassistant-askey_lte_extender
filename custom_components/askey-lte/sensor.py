@@ -1,5 +1,5 @@
 from homeassistant.components.sensor import SensorEntity, SensorStateClass
-from homeassistant.components.number import NumberEntity, NumberDeviceClass
+from homeassistant.components.number import NumberDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -9,7 +9,7 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-class AskeyNumber(CoordinatorEntity, NumberEntity):
+class AskeyNumber(CoordinatorEntity, SensorEntity):
     def __init__(
         self,
         coordinator,
@@ -106,39 +106,38 @@ async def async_setup_entry(
     # list of static entity descriptions (alarms added at runtime) https://developers.home-assistant.io/docs/core/entity/number/
     entities= [
         # about_status
-        AskeyNumber(name="Uptime", coordinator=coordinator, section="about_status", key="uptime", device_class=NumberDeviceClass.DURATION, unit_of_measurement="s",state_class=SensorStateClass.TOTAL_INCREASING),
+        AskeyNumber(name="Uptime", coordinator=coordinator, section="about_status", key="uptime", device_class=NumberDeviceClass.DURATION, unit_of_measurement="s", state_class=SensorStateClass.TOTAL_INCREASING),
         AskeySensor(name="GPS Status", coordinator=coordinator, section="about_status", key="gpsStatus"),
-        AskeyNumber(name="GPS Satellites", coordinator=coordinator, section="about_status", key="gpsAmount",device_class=SensorStateClass.MEASUREMENT,nativevalue=int),
-        AskeyNumber(name="Active UE Count", coordinator=coordinator, section="about_status", key="activeUECount",device_class=SensorStateClass.MEASUREMENT,nativevalue=int),
-        AskeyNumber(name="GPS Satellites Total", coordinator=coordinator, section="about_status", key="gpsAmountTot",device_class=SensorStateClass.TOTAL,nativevalue=int),
-        AskeyNumber(name="Active UE Count Total", coordinator=coordinator, section="about_status", key="activeUECountTot",device_class=SensorStateClass.TOTAL,nativevalue=int),
+        AskeyNumber(name="GPS Satellites", coordinator=coordinator, section="about_status", key="gpsAmount", device_class=None, state_class=SensorStateClass.MEASUREMENT, nativevalue=int, unit_of_measurement="sat"),
+        AskeyNumber(name="Active UE Count", coordinator=coordinator, section="about_status", key="activeUECount", device_class=None, state_class=SensorStateClass.MEASUREMENT, nativevalue=int, unit_of_measurement="count"),
+        AskeyNumber(name="GPS Satellites Total", coordinator=coordinator, section="about_status", key="gpsAmountTot", device_class=None, state_class=SensorStateClass.TOTAL, nativevalue=int, unit_of_measurement="sat"),
+        AskeyNumber(name="Active UE Count Total", coordinator=coordinator, section="about_status", key="activeUECountTot", device_class=None, state_class=SensorStateClass.TOTAL, nativevalue=int, unit_of_measurement="count"),
         # advanced_status
         AskeySensor(name="EARFCN", coordinator=coordinator, section="advanced_status", key="earfcn"),
         AskeySensor(name="CSG ID", coordinator=coordinator, section="advanced_status", key="csgID"),
-        AskeyNumber(name="Percent Min", coordinator=coordinator, section="advanced_status", key="percentMin",nativevalue=int),
-        AskeyNumber(name="Cell Type", coordinator=coordinator, section="advanced_status", key="cellType",nativevalue=int),
-        AskeyNumber(name="TX dBm Max", coordinator=coordinator, section="advanced_status", key="txDbmMax", device_class=NumberDeviceClass.SIGNAL_STRENGTH, nativevalue=float,unit_of_measurement="dBm"),
+        AskeyNumber(name="Percent Min", coordinator=coordinator, section="advanced_status", key="percentMin", device_class=None, state_class=SensorStateClass.MEASUREMENT, nativevalue=int, unit_of_measurement="%"),
+        AskeyNumber(name="Cell Type", coordinator=coordinator, section="advanced_status", key="cellType", device_class=None, state_class=SensorStateClass.MEASUREMENT, nativevalue=int, unit_of_measurement="count"),
+        AskeyNumber(name="TX dBm Max", coordinator=coordinator, section="advanced_status", key="txDbmMax", device_class=NumberDeviceClass.SIGNAL_STRENGTH, state_class=SensorStateClass.MEASUREMENT, nativevalue=float, unit_of_measurement="dBm"),
         AskeySensor(name="Operation Mode", coordinator=coordinator, section="advanced_status", key="operationMode"),
-        AskeyNumber(name="Automatic TX Power Mode", coordinator=coordinator, section="advanced_status", key="automaticTxPwrMode"),
-        AskeyNumber(name="Turn Off RF", coordinator=coordinator, section="advanced_status", key="turnOffRf"),
-        AskeyNumber(name="Recommend TX Power", coordinator=coordinator, section="advanced_status", key="recommendTxPower", device_class=NumberDeviceClass.SIGNAL_STRENGTH, nativevalue=float,unit_of_measurement="dBm"),
+        AskeyNumber(name="Automatic TX Power Mode", coordinator=coordinator, section="advanced_status", key="automaticTxPwrMode", device_class=None, state_class=SensorStateClass.MEASUREMENT, unit_of_measurement="count"),
+        AskeyNumber(name="Turn Off RF", coordinator=coordinator, section="advanced_status", key="turnOffRf", device_class=None, state_class=SensorStateClass.MEASUREMENT, unit_of_measurement="count"),
+        AskeyNumber(name="Recommend TX Power", coordinator=coordinator, section="advanced_status", key="recommendTxPower", device_class=NumberDeviceClass.SIGNAL_STRENGTH, state_class=SensorStateClass.MEASUREMENT, nativevalue=float, unit_of_measurement="dBm"),
         AskeySensor(name="HNB Name", coordinator=coordinator, section="advanced_status", key="hnbName"),
-        AskeySensor(name="RF Power Mode", coordinator=coordinator, section="advanced_status", key="rfPowerMode"),
-        AskeyNumber(name="Bandwidth", coordinator=coordinator, section="advanced_status", key="bandwidth", device_class=NumberDeviceClass.FREQUENCY, nativevalue=int,unit_of_measurement="MHz"),
-        AskeyNumber(name="TX dBm Min", coordinator=coordinator, section="advanced_status", key="txDbmMin", device_class=NumberDeviceClass.SIGNAL_STRENGTH, nativevalue=float,unit_of_measurement="dBm"),
-        AskeyNumber(name="4G Signal", coordinator=coordinator, section="advanced_status", key="FourGsignal", device_class=NumberDeviceClass.SIGNAL_STRENGTH, nativevalue=float,unit_of_measurement="dBm"),
-        AskeyNumber(name="TX Power", coordinator=coordinator, section="advanced_status", key="txPower", device_class=NumberDeviceClass.SIGNAL_STRENGTH, nativevalue=float,unit_of_measurement="dBm"),
-        AskeyNumber(name="PCI", coordinator=coordinator, section="advanced_status", key="pci"),
-        AskeyNumber(name="ENDC X2", coordinator=coordinator, section="advanced_status", key="endcX2"),
+        AskeySensor(name="RF Power Mode", coordinator=coordinator, section="advanced_status", key="rfPowerMode"),        AskeyNumber(name="Bandwidth", coordinator=coordinator, section="advanced_status", key="bandwidth", device_class=NumberDeviceClass.FREQUENCY, state_class=SensorStateClass.MEASUREMENT, nativevalue=int, unit_of_measurement="MHz"),
+        AskeyNumber(name="TX dBm Min", coordinator=coordinator, section="advanced_status", key="txDbmMin", device_class=NumberDeviceClass.SIGNAL_STRENGTH, state_class=SensorStateClass.MEASUREMENT, nativevalue=float, unit_of_measurement="dBm"),
+        AskeyNumber(name="4G Signal", coordinator=coordinator, section="advanced_status", key="FourGsignal", device_class=NumberDeviceClass.SIGNAL_STRENGTH, state_class=SensorStateClass.MEASUREMENT, nativevalue=float, unit_of_measurement="dBm"),
+        AskeyNumber(name="TX Power", coordinator=coordinator, section="advanced_status", key="txPower", device_class=NumberDeviceClass.SIGNAL_STRENGTH, state_class=SensorStateClass.MEASUREMENT, nativevalue=float, unit_of_measurement="dBm"),
+        AskeyNumber(name="PCI", coordinator=coordinator, section="advanced_status", key="pci", device_class=None, state_class=SensorStateClass.MEASUREMENT, nativevalue=int, unit_of_measurement="count"),
+        AskeyNumber(name="ENDC X2", coordinator=coordinator, section="advanced_status", key="endcX2", device_class=None, state_class=SensorStateClass.MEASUREMENT, nativevalue=int, unit_of_measurement="count"),
         # devices_status
         AskeySensor(name="Operation Mode Last 24h", coordinator=coordinator, section="devices_status", key="operationModeLast24Hours"),
-        AskeyNumber(name="Emergency Access UE Count Total", coordinator=coordinator, section="devices_status", key="emerAcUECountTot",state_class=SensorStateClass.MEASUREMENT),
-        AskeyNumber(name="Active UE Count Total", coordinator=coordinator, section="devices_status", key="activeUECountTot",state_class=SensorStateClass.TOTAL),
-        AskeyNumber(name="Active UE Count", coordinator=coordinator, section="devices_status", key="activeUECount",state_class=SensorStateClass.MEASUREMENT),
+        AskeyNumber(name="Emergency Access UE Count Total", coordinator=coordinator, section="devices_status", key="emerAcUECountTot", device_class=None, state_class=SensorStateClass.MEASUREMENT, unit_of_measurement="Total"),
+        AskeyNumber(name="Active UE Count Total", coordinator=coordinator, section="devices_status", key="activeUECountTot", device_class=None, state_class=SensorStateClass.TOTAL, unit_of_measurement="Total"),
+        AskeyNumber(name="Active UE Count", coordinator=coordinator, section="devices_status", key="activeUECount", device_class=None, state_class=SensorStateClass.MEASUREMENT, unit_of_measurement="Total"),
         AskeySensor(name="Operation Mode Last Hour", coordinator=coordinator, section="devices_status", key="operationModeLastHour"),
-        AskeyNumber(name="Emergency Access UE Count", coordinator=coordinator, section="devices_status", key="emerAcUECount",state_class=SensorStateClass.TOTAL),
-        AskeyNumber(name="Active UE Count Member", coordinator=coordinator, section="devices_status", key="activeUECountMem",state_class=SensorStateClass.TOTAL),
-        AskeyNumber(name="Emergency Access UE Count Member", coordinator=coordinator, section="devices_status", key="emerAcUECountMem"),
+        AskeyNumber(name="Emergency Access UE Count", coordinator=coordinator, section="devices_status", key="emerAcUECount", device_class=None, state_class=SensorStateClass.TOTAL, unit_of_measurement="Total"),
+        AskeyNumber(name="Active UE Count Member", coordinator=coordinator, section="devices_status", key="activeUECountMem", device_class=None, state_class=SensorStateClass.TOTAL, unit_of_measurement="Total"),
+        AskeyNumber(name="Emergency Access UE Count Member", coordinator=coordinator, section="devices_status", key="emerAcUECountMem", device_class=None, state_class=SensorStateClass.MEASUREMENT, unit_of_measurement="Total"),
         # gps_status
         AskeyNumber(name="Longitude", coordinator=coordinator, section="gps_status", key="longi", unit_of_measurement="°"),
         AskeyNumber(name="Latitude", coordinator=coordinator, section="gps_status", key="lati", unit_of_measurement="°")]
