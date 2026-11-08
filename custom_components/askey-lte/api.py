@@ -1,73 +1,101 @@
-import time
-from aiohttp import ClientSession
-#from .const import BASE_URL_TEMPLATE, METADATA_PATHS
+import argparse
 import json
 import logging
+import time
+from http.cookies import SimpleCookie
+
+import aiohttp
+import py_mini_racer
 
 _LOGGER = logging.getLogger(__name__)
+_SENSITIVE_COOKIE_MARKERS = ("auth", "token", "session", "sid", "csrf", "xsrf")
+
 
 class AskeyLTEApi:
-    def __init__(self, ip, password, session: ClientSession):
+    def __init__(self, ip, password, session: aiohttp.ClientSession):
         self.ip = ip
         self.password = password
         self.session = session
-        self.token = None
-        self.xsrf = None
-        self.token_expiry = 0
         self.alarm_defs = {}
         self.reboot_defs = {}
 
     @property
     def headers(self):
-        return {
-            "Content-Type": "application/json",
-            "Authtoken": self.token or "",
-            "X-Requested-With": "XMLHttpRequest"
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest",
         }
+        return headers
 
-    @property
-    def cookies(self):
-        return {
-            "X-XSRF-TOKEN": self.xsrf,
-            "Authtoken": self.token
-        }
-    
     def base_url(self, path=""):
-        if path.startswith("data/"):
+        if path.startswith("data/") or path.startswith("js/"):
             return f"https://{self.ip}/{path}"  # direct root path
-        return f"https://{self.ip}/webapi/{path}"
+        return f"https://{self.ip}/webapi/{path}?_={str(int((time.time()) * 1000))}"
 
     async def authenticate(self):
         expires_ts = str(int((time.time() + 1800) * 1000))
-        try:
-            async with self.session.post(f"https://{self.ip}/webapi/login?password={self.password}&expires={expires_ts}", headers=self.headers, ssl=False) as response:            
-                data = await response.json()
-                self.token = data.get("Authtoken")
-                self.token_expiry = data.get("expires")
-                self.xsrf = response.cookies.get("X-XSRF-TOKEN")
-                await self.cache_metadata()
-                self.alarm_log = await self.get_alarm_log()
-                self.reboot_log = await self.get_reboot_log()
-        except Exception as e:
-            _LOGGER.error("ASKEY: Exception during authentication %s", e)
+        js_code = await self.fetch_data("js/common.js?v=v3.6.0408", return_json=False)
+        if not isinstance(js_code, str):
+            raise RuntimeError("Unable to retrieve ASKEY login script")
+        sha256_start = js_code.find("function sha256")
+        if sha256_start < 0:
+            raise RuntimeError("ASKEY login script does not contain sha256")
+        sha256result = py_mini_racer.MiniRacer().eval(
+            js_code[sha256_start:] + f" sha256({json.dumps(self.password)})"
+        )
+        async with self.session.post(
+            f"https://{self.ip}/webapi/login",
+            params={"expires": expires_ts, "password": sha256result},
+            headers=self.headers,
+            ssl=False,
+        ) as response:
+            response.raise_for_status()
+            data = await response.json()
+            if data.get("result") != 1:
+                raise Exception(f"ASKEY Device Error: {data.get('message')}")
+            self.session.cookie_jar.update_cookies(
+                response.cookies, response_url=response.url
+            )
+            await self.cache_metadata()
         return {}
-        
-    async def fetch_data(self, endpoint):
+
+    async def fetch_data(self, endpoint, return_json=True):
         try:
-            async with self.session.get(self.base_url(endpoint), headers=self.headers, cookies=self.cookies, ssl=False) as response:
+            url = self.base_url(endpoint)
+            headers = self.headers.copy()
+            xsrf_cookie = self.session.cookie_jar.filter_cookies(url).get(
+                "X-XSRF-TOKEN"
+            )
+            if xsrf_cookie:
+                headers["X-XSRF-TOKEN"] = xsrf_cookie.value
+            async with self.session.get(
+                url,
+                headers=headers,
+                ssl=False,
+            ) as response:
                 text = await response.text()
-                return json.loads(text) if response.status == 200 else {}
+                if response.status != 200:
+                    _LOGGER.warning(
+                        "ASKEY request for %s returned HTTP %s",
+                        endpoint,
+                        response.status,
+                    )
+                    return {}
+                if return_json:
+                    return json.loads(text)
+                else:
+                    return text
         except Exception as e:
             _LOGGER.error("ASKEY: Exception while fetching %s: %s", endpoint, e)
             return {}
 
     async def cache_metadata(self):
         self.alarm_defs = await self.fetch_data("data/alarm.json")
-        self.reboot_defs = await self.fetch_data("data/reboot.json") 
-            
+        self.reboot_defs = await self.fetch_data("data/reboot.json")
+
     async def get_alarm_log(self) -> dict:
         return await self.fetch_data("alarmLog")
-        
+
     async def get_reboot_log(self) -> dict:
         return await self.fetch_data("rebootLog")
 
@@ -83,21 +111,73 @@ class AskeyLTEApi:
     async def get_gps_status(self) -> dict:
         return await self.fetch_data("gps")
 
-async def test_api():
-    async with ClientSession() as session:
-        ip=""
-        password=""
+
+async def on_request_start(session, trace_config_ctx, params):
+    cookies = session.cookie_jar.filter_cookies(params.url)
+    _LOGGER.debug(
+        "Starting request: %s %s; session cookies: %s",
+        params.method,
+        params.url.path,
+        _cookie_values(cookies),
+    )
+
+
+async def on_request_headers_sent(session, trace_config_ctx, params):
+    cookies = SimpleCookie()
+    for header in params.headers.getall("Cookie", []):
+        cookies.load(header)
+    _LOGGER.debug(
+        "Sent request: %s %s; cookies: %s",
+        params.method,
+        params.url.path,
+        _cookie_values(cookies),
+    )
+
+
+async def on_request_end(session, trace_config_ctx, params):
+    _LOGGER.debug(
+        "Ending request: %s %s -> status %s; received cookies: %s",
+        params.method,
+        params.url.path,
+        params.response.status,
+        _cookie_values(params.response.cookies),
+    )
+
+
+def _cookie_values(cookies):
+    return {name: cookie.value for name, cookie in cookies.items()}
+
+
+def create_trace_config():
+    trace_config = aiohttp.TraceConfig()
+    trace_config.on_request_start.append(on_request_start)
+    trace_config.on_request_headers_sent.append(on_request_headers_sent)
+    trace_config.on_request_end.append(on_request_end)
+    return trace_config
+
+
+async def test_api(ip, password):
+    logging.basicConfig(level=logging.DEBUG)
+    async with aiohttp.ClientSession(
+        cookie_jar=aiohttp.CookieJar(unsafe=True),
+        # trace_configs=[create_trace_config()],
+    ) as session:
         api = AskeyLTEApi(ip, password, session)
         await api.authenticate()
-        print(f"Alarm Codes: {api.alarm_defs}\n")
-        print(f"Reboot Codes: {api.reboot_defs}\n")
-        about = await api.get_about_status()
-        print(f"About status: {about}\n\n")
-        reboot_log = await api.get_reboot_log()
-        print(f"Reboot Log: {reboot_log}\n\n")
-        alarm_log = await api.get_alarm_log()
-        print(f"Alarm Log: {alarm_log}\n\n")
+
+        # print(f"Alarm Codes: {api.alarm_defs}\n")
+        # print(f"Reboot Codes: {api.reboot_defs}\n")
+        devices = await api.get_devices_status()
+        print(f"About status: {devices}\n\n")
+        print(f"Reboot Log: {api.reboot_log}\n\n")
+        print(f"Alarm Log: {api.alarm_log}\n\n")
+
 
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(test_api())
+
+    parser = argparse.ArgumentParser(description="Test Askey LTE API")
+    parser.add_argument("ip", type=str, help="IP address of the Askey LTE device")
+    parser.add_argument("password", type=str, help="Password for the Askey LTE device")
+    args = parser.parse_args()
+    asyncio.run(test_api(args.ip, args.password))
