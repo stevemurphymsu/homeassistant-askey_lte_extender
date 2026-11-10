@@ -1,28 +1,28 @@
 {
-  "domain": "askey-lte",
-  "name": "ASKEY LTE Network Extender",
-  "documentation": "https://github.com/stevemurphymsu/askey_lte_extender",
-  "version": "1.0.0",
-  "issue_tracker": "https://github.com/stevemurphymsu/homeassistant-askey_lte_extender/issues",
-  "requirements": [
-    "py_mini_racer==0.6.0"
-  ],
   "categories": [
     "computers_network.monitoring"
   ],
   "codeowners": [
     "@stevemurphymsu"
   ],
-  "integration_type": "device",
-  "iot_class": "local_polling",
   "config_flow": true,
-  "loggers": [
-    "askey_lte"
-  ],
   "dhcp": [
     {
       "macaddress": "A0:8A:06*",
       "hostname": "*"
     }
-  ]
+  ],
+  "domain": "askey-lte",
+  "documentation": "https://github.com/stevemurphymsu/askey_lte_extender",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/stevemurphymsu/homeassistant-askey_lte_extender/issues",
+  "loggers": [
+    "askey_lte"
+  ],
+  "requirements": [
+    "py_mini_racer==0.6.0"
+  ],
+  "name": "ASKEY LTE Network Extender",
+  "version": "1.0.0"
 }
