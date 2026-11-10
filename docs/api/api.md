@@ -33,19 +33,35 @@ Custom Home Assistant integration for ASKEY LTE femtocells. This guide documents
 **Payload:**
 
 ```
-expires=(unix timestamp+30 minutes)&password=(sha256)
+expires=(unix timestamp+30 minutes)&password=(custom "sha256" generated using JavaScript function in js/common.js from the device)
 ```
 
 **Response:**
 
+AuthToken and X-XSRF-TOKEN cookies are used to maintain session and need to be sent in subsequent requests.  The response for a successful login is below.  Unsuccessful logins have a result greater than 1, with the message indicating the failure reason. 
+
 ```json
 {
     "message": "",
-    "result": 1,
-    "authtoken": "YOxBe1QYRaudwxMUmFCE-9z-oPWBSkWLqKucuZUkmiwfn1muKU5CeKFfX6a8_Za5",
-    "expires": "1755791190659"
+    "result": 1
 }
 ```
+---
+
+## 📝 Required Headers
+
+All API requests require the following headers and cookies set during login:
+
+- `Content-Type: application/x-www-form-urlencoded`
+- `X-Requested-With: XMLHttpRequest`
+- `X-XSRF-TOKEN: <token from /webapi/login>`
+
+---
+
+## 🔄 Token Handling
+
+- The `Authtoken` returned from `/webapi/login` must be included in all subsequent requests.
+- Tokens expire at the timestamp provided in the `expires` field.
 
 ---
 
@@ -402,23 +418,6 @@ expires=(unix timestamp+30 minutes)&password=(sha256)
     "currentTime": "07-22-2025 16:20:44 UTC"
 }
 ```
-
----
-
-## 📝 Required Headers
-
-All API requests require the following headers:
-
-- `Content-Type: application/x-www-form-urlencoded`
-- `X-Requested-With: XMLHttpRequest`
-- `Authtoken: <token from /webapi/login>`
-
----
-
-## 🔄 Token Handling
-
-- The `Authtoken` returned from `/webapi/login` must be included in all subsequent requests.
-- Tokens expire at the timestamp provided in the `expires` field.
 
 ---
 

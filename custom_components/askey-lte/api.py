@@ -8,7 +8,6 @@ import aiohttp
 import py_mini_racer
 
 _LOGGER = logging.getLogger(__name__)
-_SENSITIVE_COOKIE_MARKERS = ("auth", "token", "session", "sid", "csrf", "xsrf")
 
 
 class AskeyLTEApi:
