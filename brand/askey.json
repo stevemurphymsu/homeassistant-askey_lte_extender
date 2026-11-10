@@ -1,0 +1,5 @@
+{
+  "domain": "askey-lte",
+  "name": "Askey",
+  "integrations": ["askey-lte"]
+}
