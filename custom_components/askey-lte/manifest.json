@@ -1,4 +1,6 @@
 {
+  "domain": "askey-lte",
+  "name": "ASKEY LTE Network Extender",
   "categories": [
     "computers_network.monitoring"
   ],
@@ -12,7 +14,7 @@
       "hostname": "*"
     }
   ],
-  "domain": "askey-lte",
+  
   "documentation": "https://github.com/stevemurphymsu/askey_lte_extender",
   "integration_type": "device",
   "iot_class": "local_polling",
@@ -23,6 +25,5 @@
   "requirements": [
     "py_mini_racer==0.6.0"
   ],
-  "name": "ASKEY LTE Network Extender",
   "version": "1.0.0"
 }
