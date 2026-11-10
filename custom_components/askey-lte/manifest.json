@@ -19,7 +19,6 @@
   "loggers": [
     "askey_lte"
   ],
-  "system_health": true,
   "dhcp": [
     {
       "macaddress": "A0:8A:06*",
