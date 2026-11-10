@@ -1,6 +1,6 @@
 # ASKEY LTE Network Extender – Home Assistant Integration
 
-Track and visualize LTE diagnostics, alarms, GPS data, bandwidth trends, and system health from your ASKEY femtocell—all inside Home Assistant.
+System health, usage, alarms, and bandwidth trends from your ASKEY LTE femtocell inside Home Assistant.  This integration is confirmed to work with ASKEY LTE extenders issued by Verzion. 
 
 ---
 
@@ -20,19 +20,23 @@ Track and visualize LTE diagnostics, alarms, GPS data, bandwidth trends, and sys
 
 ---
 
+<!-- ha-marketplace:exclude-start -->
+
 ## ⚙️ Installation
 
-### Option 1: Manual
+[![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=stevemurphymsu&repository=homeassistant-askey_lte_extender&category=integration)
+
+
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=askey-l
+)
+
+Or install manually:
 1. Copy `custom_components/askey_lte` into `config/custom_components/`
 2. Restart Home Assistant
 3. Go to **Settings > Devices & Services > Add Integration**
 4. Search for `ASKEY LTE`
 
-### Option 2: HACS
-1. Open HACS > Integrations > Custom Repositories
-2. Add this repo and select `Integration`
-3. Install & restart
-4. Configure from UI
+<!-- ha-marketplace:exclude-end -->
 
 ---
 
@@ -85,11 +89,16 @@ Full documentation available in the GitHub repo including setup, token flow, tro
 
 - [Full API Reference →](docs/api.md)
 
+---
+
+## Release Notes
+
+- v1.0.0 - Initial Release
 
 ---
 
 ## 👤 Codeowners
 
-Made by [@stevemurphymsu] – femtocell obsessive, diagnostics-obsessed, and loving LTE visibility.
+Made by [@stevemurphymsu].
 
 PRs welcome!
